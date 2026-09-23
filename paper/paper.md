@@ -49,7 +49,7 @@ A central design problem is that different thresholds in a sweep can yield diffe
 
 The package is designed to integrate directly with established QCA workflows by delegating truth-table construction and minimization to the `QCA` package while providing reproducible threshold iteration, solution tracking, visualization, and reporting. Together with its CRAN distribution, archived releases, documentation, tests, and reproducible examples, this provides a foundation for its use in applied crisp-set QCA research beyond the original methodological study.
 
-![Example of a cross-threshold configuration summary produced from a `ThSQCA` outcome-threshold sweep, following the notation of @fiss2011. \label{fig:threshold}](figures/figure1.png)
+![Example of a cross-threshold configuration summary produced from a `ThSQCA` outcome-threshold sweep, following the notation of @fiss2011. \label{fig:threshold}](figure1.png)
 
 # AI usage disclosure
 
