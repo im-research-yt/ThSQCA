@@ -1,0 +1,18 @@
+url: https://im-research-yt.github.io/ThSQCA/
+
+template:
+  bootstrap: 5
+
+home:
+  title: "ThSQCA: Threshold-Sweep QCA"
+
+reference:
+  - title: "Sweep functions"
+    contents:
+      - otSweep
+      - ctSweepS
+      - ctSweepM
+      - dtSweep
+  - title: "Reporting and classification"
+    contents:
+      - generate_report
