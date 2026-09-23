@@ -53,7 +53,7 @@ The package is designed to integrate directly with established QCA workflows by 
 
 # AI usage disclosure
 
-The author used Anthropic's Claude and OpenAI's ChatGPT for assistance with preliminary English-language editing, manuscript organization, restructuring this paper to JOSS's required section format, and the preparation and review of selected R code, including the continuous integration workflow and package documentation added to the repository. No generative AI was used to design the package's statistical methodology, to author its core minimization logic (which is delegated entirely to `QCA`), or to generate the results reported in the companion article [@toyoda2026b]. All AI-assisted content, including this disclosure, was reviewed and verified by the author, who takes full responsibility for the package and this article.
+The author used Anthropic's Claude (Sonnet 5 and Opus 5) and OpenAI's ChatGPT (GPT-5.6 Sol) for assistance with preliminary English-language editing, manuscript organization, restructuring this paper to JOSS's required section format, and the preparation and review of selected R code, including the continuous integration workflow and package documentation added to the repository. No generative AI was used to design the package's statistical methodology, to modify or reproduce the Boolean minimization algorithms provided by `QCA`, or to generate the empirical results reported in the companion article [@toyoda2026b]. All AI-assisted content, including this disclosure, was reviewed and verified by the author, who takes full responsibility for the package and this article.
 
 # Acknowledgements
 
