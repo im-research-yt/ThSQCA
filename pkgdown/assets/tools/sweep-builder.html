@@ -1,0 +1,863 @@
+<title>Sweep Builder</title>
+<meta name="description" content="Turn a single-threshold QCA setup into ready-to-run ThSQCA sweep code.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef1ef;
+    --surface:#ffffff;
+    --surface-2:#e3e8e6;
+    --border:#c9d1ce;
+    --text:#16211f;
+    --text-muted:#57655f;
+    --accent:#c1601a;
+    --accent-ink:#ffffff;
+    --accent-2:#1f6f78;
+    --accent-2-tint:#e2eeee;
+    --code-bg:#151b1a;
+    --code-text:#e7ece9;
+    --code-key:#e08a3e;
+    --code-str:#8fd0c4;
+    --code-num:#d7c48a;
+    --shadow: 0 1px 2px rgba(20,30,28,.06), 0 8px 24px -12px rgba(20,30,28,.18);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12181a;
+      --surface:#1b2325;
+      --surface-2:#222c2f;
+      --border:#354140;
+      --text:#e7ece9;
+      --text-muted:#9aa8a4;
+      --accent:#e08a3e;
+      --accent-ink:#1b1206;
+      --accent-2:#4fb3ad;
+      --accent-2-tint:#1c2f2f;
+      --code-bg:#0d1213;
+      --code-text:#e7ece9;
+      --code-key:#f0a05c;
+      --code-str:#8fd0c4;
+      --code-num:#e3d29e;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12181a;
+    --surface:#1b2325;
+    --surface-2:#222c2f;
+    --border:#354140;
+    --text:#e7ece9;
+    --text-muted:#9aa8a4;
+    --accent:#e08a3e;
+    --accent-ink:#1b1206;
+    --accent-2:#4fb3ad;
+    --accent-2-tint:#1c2f2f;
+    --code-bg:#0d1213;
+    --code-text:#e7ece9;
+    --code-key:#f0a05c;
+    --code-str:#8fd0c4;
+    --code-num:#e3d29e;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    padding-inline:16px;
+    padding-block:28px 64px;
+  }
+  .wrap{max-width:1080px; margin:0 auto;}
+  code, pre, .mono{font-family:"IBM Plex Mono", ui-monospace, monospace;}
+
+  header.top{margin-bottom:22px;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent-2); background:var(--accent-2-tint);
+    border:1px solid var(--border);
+    padding:3px 10px; border-radius:999px;
+    margin-bottom:12px;
+  }
+  h1{
+    font-size:clamp(22px, 3.4vw, 30px);
+    line-height:1.2; margin:0 0 8px; text-wrap:balance;
+    font-weight:700;
+  }
+  header.top p{
+    color:var(--text-muted); max-width:62ch; margin:0;
+    font-size:14.5px; line-height:1.55;
+  }
+
+  .layout{
+    display:grid; grid-template-columns: 1.15fr 1fr; gap:20px;
+    align-items:start;
+  }
+  @media (max-width: 860px){
+    .layout{grid-template-columns: 1fr;}
+  }
+
+  .panel{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; box-shadow:var(--shadow);
+    padding:20px;
+  }
+  .panel + .panel{margin-top:16px;}
+
+  .section-title{
+    font-size:11.5px; text-transform:uppercase; letter-spacing:.07em;
+    color:var(--text-muted); font-weight:600; margin:0 0 12px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .section-title .n{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; border-radius:50%;
+    background:var(--surface-2); color:var(--text);
+    font-size:10.5px; font-family:"IBM Plex Mono",monospace;
+  }
+
+  .tabs{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:6px;
+    margin-bottom:14px;
+  }
+  @media (max-width:560px){ .tabs{grid-template-columns:repeat(2,1fr);} }
+  .tab{
+    border:1px solid var(--border); background:var(--surface-2);
+    color:var(--text); border-radius:10px; padding:9px 6px;
+    font-size:12px; font-weight:600; cursor:pointer; text-align:center;
+    line-height:1.3; transition:background .12s, border-color .12s, color .12s;
+  }
+  .tab .fn{display:block; font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:10.5px; margin-top:2px; opacity:.75;}
+  .tab:hover{border-color:var(--accent-2);}
+  .tab.active{
+    background:var(--accent-2); border-color:var(--accent-2); color:#fff;
+  }
+  .tab.active .fn{opacity:.9;}
+
+  .tab-desc{
+    font-size:13px; color:var(--text-muted); margin:0 0 16px;
+    padding:10px 12px; background:var(--accent-2-tint);
+    border:1px solid var(--border); border-radius:9px;
+  }
+
+  label{
+    display:block; font-size:12.5px; font-weight:600; margin-bottom:5px;
+  }
+  label .hint{font-weight:400; color:var(--text-muted); font-size:11.5px;}
+  .field{margin-bottom:14px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+  @media (max-width:480px){ .row2,.row3{grid-template-columns:1fr;} }
+
+  input[type="text"], input[type="number"], select{
+    width:100%; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); border-radius:8px; padding:8px 10px;
+    font-size:13.5px; font-family:"IBM Plex Mono", monospace;
+  }
+  input:focus, select:focus{outline:2px solid var(--accent-2); outline-offset:1px;}
+
+  .cond-table{border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  .cond-row{
+    display:grid; grid-template-columns: 1fr .95fr 1.15fr .95fr; gap:8px;
+    padding:9px 10px; align-items:center;
+    border-bottom:1px solid var(--border);
+  }
+  .precal-toggle{
+    display:flex; align-items:center; gap:5px; font-size:10.5px;
+    color:var(--text-muted); white-space:nowrap; cursor:pointer;
+  }
+  .precal-toggle input{width:auto; margin:0;}
+  .precal-note{font-size:11px; color:var(--text-muted); font-style:italic;}
+  .cond-row:last-child{border-bottom:none;}
+  .cond-row:nth-child(odd){background:var(--surface-2);}
+  .cond-row .cname{font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;}
+  .cond-mode{display:flex; gap:4px;}
+  .mode-btn{
+    flex:1; border:1px solid var(--border); background:var(--surface);
+    color:var(--text-muted); border-radius:6px; padding:5px 4px;
+    font-size:10.5px; cursor:pointer; font-weight:600;
+  }
+  .mode-btn.on{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  .cond-vals{display:flex; gap:6px;}
+  .cond-vals input{padding:6px 8px; font-size:12.5px;}
+  .empty-note{padding:14px; color:var(--text-muted); font-size:12.5px; text-align:center;}
+
+  .dir-row{
+    display:grid; grid-template-columns: 1.2fr 1.8fr; gap:10px;
+    padding:9px 10px; align-items:center;
+    border-bottom:1px solid var(--border);
+  }
+  .dir-row:last-child{border-bottom:none;}
+  .dir-row:nth-child(odd){background:var(--surface-2);}
+  .dir-row select{padding:6px 8px; font-size:12.5px;}
+
+  .note-box{
+    font-size:12px; line-height:1.55; color:var(--text-muted);
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:9px; padding:9px 11px; margin:-4px 0 14px;
+  }
+  .note-box b{color:var(--text); font-weight:600;}
+  .note-box .soltype{
+    display:inline-block; font-weight:700; color:var(--accent);
+    font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+    text-transform:uppercase; letter-spacing:.04em;
+  }
+
+  .adv{
+    border:1px dashed var(--border); border-radius:10px; padding:12px;
+    margin-top:4px;
+  }
+  .adv summary{cursor:pointer; font-size:12.5px; font-weight:600; color:var(--text-muted);}
+  .adv[open] summary{margin-bottom:10px;}
+
+  .code-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:10px; gap:10px; flex-wrap:wrap;
+  }
+  .code-head h2{font-size:13px; margin:0; font-weight:600;}
+  .copy-btn{
+    border:1px solid var(--accent); background:var(--accent); color:var(--accent-ink);
+    border-radius:8px; padding:7px 13px; font-size:12.5px; font-weight:600;
+    cursor:pointer; font-family:"IBM Plex Sans",sans-serif;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .copy-btn:active{transform:translateY(1px);}
+  .copy-btn.copied{background:var(--accent-2); border-color:var(--accent-2);}
+
+  pre.codebox{
+    background:var(--code-bg); color:var(--code-text);
+    border-radius:10px; padding:16px 14px; font-size:12.5px; line-height:1.6;
+    overflow-x:auto; margin:0; white-space:pre;
+  }
+  .k{color:var(--code-key);}
+  .s{color:var(--code-str);}
+  .nnum{color:var(--code-num);}
+
+  .trust{
+    margin-top:14px; font-size:12px; line-height:1.55; color:var(--text-muted);
+    border-top:1px solid var(--border); padding-top:12px;
+  }
+  .trust b{color:var(--text);}
+
+  footer{
+    margin-top:22px; font-size:12px; color:var(--text-muted);
+    display:flex; gap:14px; flex-wrap:wrap; align-items:center;
+  }
+  footer a{color:var(--accent-2); text-decoration:none; font-weight:600;}
+  footer a:hover{text-decoration:underline;}
+  .dot{opacity:.5;}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">ThSQCA &middot; sweep builder</span>
+    <h1>Turn a fixed-threshold QCA setup into sweep code</h1>
+    <p>Already have a working <code class="mono">QCA::truthTable()</code> / <code class="mono">minimize()</code> analysis? Pick a sweep type, fill in the same variables and thresholds you already use, and copy out the equivalent <code class="mono">ThSQCA</code> call.</p>
+  </header>
+
+  <div class="layout">
+    <div class="left">
+      <div class="panel">
+        <p class="section-title"><span class="n">1</span>Sweep type</p>
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-tab="ot">Outcome<span class="fn">otSweep()</span></button>
+          <button class="tab" data-tab="cts">Single condition<span class="fn">ctSweepS()</span></button>
+          <button class="tab" data-tab="ctm">Multi condition<span class="fn">ctSweepM()</span></button>
+          <button class="tab" data-tab="dt">Dual<span class="fn">dtSweep()</span></button>
+        </div>
+        <p class="tab-desc" id="tabDesc"></p>
+
+        <p class="section-title"><span class="n">2</span>Data &amp; variables</p>
+        <div class="row3">
+          <div class="field">
+            <label>Data object <span class="hint">R variable name</span></label>
+            <input type="text" id="dat" value="dat">
+          </div>
+          <div class="field">
+            <label>Outcome <span class="hint">column name</span></label>
+            <input type="text" id="outcome" value="Y">
+          </div>
+          <div class="field" id="thrYField">
+            <label>Outcome threshold <span class="hint">fixed value</span></label>
+            <input type="text" id="thrY" value="7">
+          </div>
+        </div>
+        <div class="field" id="sweepRangeField">
+          <label>Outcome threshold range <span class="hint">e.g. 6:9</span></label>
+          <input type="text" id="sweepRange" value="6:9">
+        </div>
+        <div class="field">
+          <label>Condition variables <span class="hint">comma-separated column names</span></label>
+          <input type="text" id="conditions" value="X1, X2, X3">
+        </div>
+
+        <div id="condSection">
+          <p class="section-title"><span class="n">3</span>Condition thresholds</p>
+          <p class="note-box">
+            Most conditions are on their raw scale and get dichotomized at a
+            threshold. If one is already calibrated to fuzzy-set membership
+            scores in [0, 1], check <b>fuzzy 0&ndash;1</b> for it &mdash; it
+            is then passed straight through (via <code class="mono">pre_calibrated</code>)
+            with no threshold, and won't be offered as a variable to sweep.
+          </p>
+          <div class="cond-table" id="condTable"></div>
+        </div>
+
+        <p class="section-title" style="margin-top:16px;"><span class="n">4</span>Analysis settings</p>
+        <div class="row3">
+          <div class="field">
+            <label>incl.cut <span class="hint">consistency</span></label>
+            <input type="text" id="inclCut" value="0.8">
+          </div>
+          <div class="field">
+            <label>n.cut <span class="hint">frequency</span></label>
+            <input type="text" id="nCut" value="1">
+          </div>
+          <div class="field">
+            <label>Solution type</label>
+            <select id="solutionType">
+              <option value="conservative">Conservative</option>
+              <option value="parsimonious">Parsimonious</option>
+              <option value="intermediate" selected>Intermediate</option>
+              <option value="liberal">Most liberal</option>
+            </select>
+          </div>
+        </div>
+        <p class="note-box" id="solutionHelp"></p>
+
+        <div id="dirExpSection">
+          <p class="section-title"><span class="n">5</span>Directional expectations <span class="hint">dir.exp, one per condition</span></p>
+          <div class="cond-table" id="dirTable"></div>
+          <p class="note-box">
+            For each condition: does its presence/high level (<b>Favors
+            outcome</b>) or its absence/low level (<b>Disfavors outcome</b>)
+            help produce the outcome, or is there <b>No expectation</b>
+            either way? This is exactly what turns the parsimonious solution
+            into the intermediate solution &mdash; the type most QCA guides
+            (Ragin 2008; Schneider &amp; Wagemann 2012) recommend reporting.
+          </p>
+        </div>
+        <details class="adv" id="advBlock">
+          <summary>Advanced (extract_mode, pri.cut)</summary>
+          <div class="row3">
+            <div class="field">
+              <label>extract_mode</label>
+              <select id="extractMode">
+                <option value="first" selected>first</option>
+                <option value="all">all</option>
+                <option value="essential">essential</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>pri.cut</label>
+              <input type="text" id="priCut" value="0">
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel" style="position:sticky; top:16px;">
+        <div class="code-head">
+          <h2 id="codeTitle">Generated R code</h2>
+          <button class="copy-btn" id="copyBtn">Copy code</button>
+        </div>
+        <pre class="codebox"><code id="codeOut"></code></pre>
+        <p class="trust">
+          <b>Why trust the numbers:</b> every sweep function delegates truth-table
+          construction and Boolean minimization to <code class="mono">QCA::truthTable()</code>
+          and <code class="mono">QCA::minimize()</code> unchanged. ThSQCA only loops,
+          collects, and reports &mdash; it does not reimplement the computation, so
+          results match a direct QCA run at every cell.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>install.packages("ThSQCA")</span>
+    <span class="dot">&middot;</span>
+    <a href="https://github.com/im-research-yt/ThSQCA" target="_blank" rel="noopener">github.com/im-research-yt/ThSQCA</a>
+    <span class="dot">&middot;</span>
+    <span>Yuki Toyoda, Hosei University</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var state = { tab: "ot", conds: [] };
+
+  var TAB_META = {
+    ot:  { label:"Outcome Threshold Sweep", fn:"otSweep()",
+           desc:"Fix all condition thresholds, vary only the outcome threshold. Use this to see whether the sufficiency solution changes as the target level of the outcome rises." },
+    cts: { label:"Single-Condition Threshold Sweep", fn:"ctSweepS()",
+           desc:"Fix the outcome threshold and all conditions but one; vary that single condition's threshold. Use this to test how sensitive the solution is to one calibration choice." },
+    ctm: { label:"Multi-Condition Threshold Sweep", fn:"ctSweepM()",
+           desc:"Fix the outcome threshold; vary several condition thresholds at once across a grid. Use this to explore the joint threshold space of multiple conditions." },
+    dt:  { label:"Dual Threshold Sweep", fn:"dtSweep()",
+           desc:"Vary the outcome threshold and one or more condition thresholds simultaneously. The most general sweep: a two-dimensional map of target level x judgment criteria." }
+  };
+
+  function $(id){ return document.getElementById(id); }
+
+  function parseConditions(raw){
+    return raw.split(",").map(function(s){return s.trim();}).filter(Boolean);
+  }
+
+  function escapeHtml(s){
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  // ---- condition table -------------------------------------------------
+
+  function rebuildCondTable(){
+    var raw = $("conditions").value;
+    var names = parseConditions(raw);
+    var table = $("condTable");
+
+    // preserve existing per-condition state where names persist
+    var prev = {};
+    state.conds.forEach(function(c){ prev[c.name] = c; });
+
+    state.conds = names.map(function(name){
+      var old = prev[name];
+      return old || { name:name, mode:"fixed", value:"7", lo:"6", hi:"9", dir:"-", precal:false };
+    });
+
+    rebuildDirTable();
+
+    if (names.length === 0){
+      table.innerHTML = '<div class="empty-note">Enter at least one condition variable above.</div>';
+      renderCode();
+      return;
+    }
+
+    var showModeToggle = (state.tab === "ctm" || state.tab === "dt");
+    var isCts = (state.tab === "cts");
+
+    var html = state.conds.map(function(c, i){
+      var modeHtml = "";
+      if (c.precal){
+        modeHtml = '<div class="cond-mode"><span class="precal-note">fuzzy, no threshold</span></div>';
+      } else if (isCts){
+        modeHtml = '<div class="cond-mode"><span style="font-size:11px;color:var(--text-muted);">&mdash;</span></div>';
+      } else if (showModeToggle){
+        modeHtml =
+          '<div class="cond-mode">'+
+            '<button type="button" class="mode-btn '+(c.mode==="fixed"?"on":"")+'" data-i="'+i+'" data-mode="fixed">Fixed</button>'+
+            '<button type="button" class="mode-btn '+(c.mode==="range"?"on":"")+'" data-i="'+i+'" data-mode="range">Sweep</button>'+
+          '</div>';
+      } else {
+        modeHtml = '<div class="cond-mode"><span style="font-size:11px;color:var(--text-muted);">fixed threshold</span></div>';
+      }
+
+      var valsHtml;
+      if (c.precal){
+        valsHtml = '<div class="cond-vals"><span class="precal-note">already 0&ndash;1 membership</span></div>';
+      } else if (isCts){
+        valsHtml = '<div class="cond-vals"><span class="precal-note">uses thrX_default</span></div>';
+      } else if (showModeToggle && c.mode === "range"){
+        valsHtml =
+          '<div class="cond-vals">'+
+            '<input type="text" data-i="'+i+'" data-field="lo" value="'+escapeHtml(c.lo)+'" placeholder="low">'+
+            '<input type="text" data-i="'+i+'" data-field="hi" value="'+escapeHtml(c.hi)+'" placeholder="high">'+
+          '</div>';
+      } else {
+        valsHtml =
+          '<div class="cond-vals">'+
+            '<input type="text" data-i="'+i+'" data-field="value" value="'+escapeHtml(c.value)+'" placeholder="threshold">'+
+          '</div>';
+      }
+
+      var precalHtml =
+        '<label class="precal-toggle">'+
+          '<input type="checkbox" data-i="'+i+'" data-field="precal" '+(c.precal?"checked":"")+'>'+
+          'fuzzy 0&ndash;1'+
+        '</label>';
+
+      return '<div class="cond-row">'+
+               '<span class="cname">'+escapeHtml(c.name)+'</span>'+
+               modeHtml+
+               valsHtml+
+               precalHtml+
+             '</div>';
+    }).join("");
+
+    table.innerHTML = html;
+
+    table.querySelectorAll(".mode-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var i = +btn.getAttribute("data-i");
+        state.conds[i].mode = btn.getAttribute("data-mode");
+        rebuildCondTable();
+      });
+    });
+    table.querySelectorAll('input[data-field="precal"]').forEach(function(cb){
+      cb.addEventListener("change", function(){
+        var i = +cb.getAttribute("data-i");
+        state.conds[i].precal = cb.checked;
+        if (cb.checked) state.conds[i].mode = "fixed";
+        rebuildCondTable();
+      });
+    });
+    table.querySelectorAll('input:not([data-field="precal"])').forEach(function(inp){
+      inp.addEventListener("input", function(){
+        var i = +inp.getAttribute("data-i");
+        var field = inp.getAttribute("data-field");
+        state.conds[i][field] = inp.value;
+        renderCode();
+      });
+    });
+
+    renderCode();
+  }
+
+  // ---- directional-expectation table ------------------------------------
+
+  var DIR_OPTIONS = [
+    { value:"-", label:"No expectation" },
+    { value:"1", label:"Favors outcome (presence/high)" },
+    { value:"0", label:"Disfavors outcome (absence/low)" }
+  ];
+
+  function rebuildDirTable(){
+    var table = $("dirTable");
+    if (!table) return;
+    if (state.conds.length === 0){
+      table.innerHTML = '<div class="empty-note">Enter at least one condition variable above.</div>';
+      return;
+    }
+    table.innerHTML = state.conds.map(function(c, i){
+      var opts = DIR_OPTIONS.map(function(o){
+        return '<option value="'+o.value+'"'+(c.dir===o.value?" selected":"")+'>'+o.label+'</option>';
+      }).join("");
+      return '<div class="dir-row">'+
+               '<span class="cname">'+escapeHtml(c.name)+'</span>'+
+               '<select data-i="'+i+'">'+opts+'</select>'+
+             '</div>';
+    }).join("");
+    table.querySelectorAll("select").forEach(function(sel){
+      sel.addEventListener("change", function(){
+        var i = +sel.getAttribute("data-i");
+        state.conds[i].dir = sel.value;
+        renderCode();
+      });
+    });
+  }
+
+  function rDirExpVec(conds){
+    var toks = conds.map(function(c){ return c.dir || "-"; });
+    if (toks.every(function(t){ return t === "-"; })) return null;
+    return "c(" + toks.map(function(t){
+      return isNumericToken(t) ? t : '"' + t + '"';
+    }).join(", ") + ")";
+  }
+
+  // ---- UI: field visibility per tab ------------------------------------
+
+  var SOLUTION_META = {
+    conservative: { include:"",  useDir:false, label:"Conservative solution",
+      text:"Logical remainders (threshold combinations with no or too few cases) are excluded entirely. No assumption is made about unobserved configurations — the safest choice, and typically the most complex solution." },
+    parsimonious: { include:"?", useDir:false, label:"Parsimonious solution",
+      text:"Remainders are treated as “don't care” and freely used to simplify the solution, with no restriction on which simplifying assumptions are allowed. The most liberal of the three commonly reported solution types." },
+    intermediate: { include:"?", useDir:true, label:"Intermediate solution",
+      text:"Remainders are treated as “don't care,” but only used when they match the directional expectations set below. This is the type most QCA guides (Ragin 2008; Schneider &amp; Wagemann 2012) recommend reporting." },
+    liberal: { include:"1", useDir:false, label:"Most liberal solution",
+      text:"All remainders are treated as if the outcome were present. The strongest, least conservative assumption — use only with a clear theoretical justification for expecting the outcome in every unobserved configuration." }
+  };
+
+  function updateSolutionHelp(){
+    var v = $("solutionType").value;
+    var m = SOLUTION_META[v] || SOLUTION_META.intermediate;
+    $("solutionHelp").innerHTML = '<span class="soltype">'+m.label+'</span> &mdash; ' + m.text;
+    $("dirExpSection").style.display = m.useDir ? "" : "none";
+  }
+
+  function updateFieldVisibility(){
+    var t = state.tab;
+    $("thrYField").style.display  = (t === "cts" || t === "ctm") ? "" : "none";
+    $("sweepRangeField").style.display = (t === "ot" || t === "dt") ? "" : "none";
+    document.querySelectorAll(".tab").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-tab") === t);
+    });
+    var meta = TAB_META[t];
+    $("tabDesc").textContent = meta.desc;
+    $("codeTitle").textContent = "Generated R code — " + meta.fn;
+  }
+
+  // ---- R vector / list helpers ------------------------------------------
+
+  function isNumericToken(s){
+    return /^-?\d+(\.\d+)?$/.test(s.trim());
+  }
+  function rScalar(s){
+    s = (s||"").trim();
+    if (s === "") return '""';
+    if (isNumericToken(s)) return s;
+    // treat bare 6:9-style ranges or c(...) as literal R code
+    if (/^\d+\s*:\s*\d+$/.test(s) || /^c\(.*\)$/.test(s)) return s;
+    return '"' + s.replace(/"/g,'\\"') + '"';
+  }
+  function rNamedVector(pairs){
+    // pairs: [[name, valueTokenAsRLiteral], ...]
+    return "c(" + pairs.map(function(p){ return p[0] + " = " + p[1]; }).join(", ") + ")";
+  }
+  function rNamedList(pairs){
+    if (pairs.length === 0) return "list()";
+    return "list(\n" + pairs.map(function(p){ return "    " + p[0] + " = " + p[1]; }).join(",\n") + "\n  )";
+  }
+  function rRangeLiteral(lo, hi){
+    lo = (lo||"").trim(); hi = (hi||"").trim();
+    if (lo === "" || hi === "") return "6:9";
+    return lo + ":" + hi;
+  }
+  function rConditionsVec(names){
+    return "c(" + names.map(function(n){ return '"' + n + '"'; }).join(", ") + ")";
+  }
+  // ---- code generation ---------------------------------------------------
+
+  function renderCode(){
+    var dat = $("dat").value.trim() || "dat";
+    var outcome = $("outcome").value.trim() || "Y";
+    var condNames = state.conds.map(function(c){ return c.name; });
+    var inclCut = $("inclCut").value.trim() || "0.8";
+    var nCut = $("nCut").value.trim() || "1";
+    var solMeta = SOLUTION_META[$("solutionType").value] || SOLUTION_META.intermediate;
+    var include = solMeta.include;
+    var extractMode = $("extractMode").value;
+    var priCut = $("priCut").value.trim() || "0";
+    var precalNames = state.conds.filter(function(c){ return c.precal; }).map(function(c){ return c.name; });
+    var precalLine = precalNames.length ? "pre_calibrated = " + rConditionsVec(precalNames) : null;
+    var dirExp = solMeta.useDir ? rDirExpVec(state.conds) : null;
+    var thrY = $("thrY").value.trim() || "7";
+    var sweepRange = $("sweepRange").value.trim() || "6:9";
+
+    var lines = [];
+    var varName = "res";
+    var fnName = "";
+
+    var commonTail = [];
+    commonTail.push("incl.cut = " + inclCut);
+    commonTail.push("n.cut = " + nCut);
+    commonTail.push('include = "' + include + '"');
+    if (dirExp) commonTail.push("dir.exp = " + dirExp);
+
+    if (condNames.length === 0){
+      $("codeOut").innerHTML = '<span style="color:var(--text-muted)">' +
+        "# add at least one condition variable to generate code" + "</span>";
+      return;
+    }
+
+    if (state.tab === "ot"){
+      varName = "res_ots";
+      var thrXPairs = state.conds.filter(function(c){ return !c.precal; })
+        .map(function(c){ return [c.name, rScalar(c.value)]; });
+      lines.push(varName + " <- otSweep(");
+      lines.push("  dat = " + dat + ",");
+      lines.push('  outcome = "' + outcome + '",');
+      lines.push("  conditions = " + rConditionsVec(condNames) + ",");
+      lines.push("  sweep_range = " + sweepRange + ",");
+      lines.push("  thrX = " + rNamedVector(thrXPairs) + ",");
+      if (precalLine) lines.push("  " + precalLine + ",");
+      commonTail.forEach(function(l){ lines.push("  " + l + ","); });
+      lines.push("  return_details = TRUE");
+      lines.push(")");
+    }
+
+    if (state.tab === "cts"){
+      varName = "res_cts";
+      var sweepVarSel = $("sweepVarSelect") ? $("sweepVarSelect").value : condNames[0];
+      var thrXDefault = $("thrXDefault") ? $("thrXDefault").value.trim() : "7";
+      var swept = state.conds.find(function(c){ return c.name === sweepVarSel; }) || state.conds[0];
+      lines.push(varName + " <- ctSweepS(");
+      lines.push("  dat = " + dat + ",");
+      lines.push('  outcome = "' + outcome + '",');
+      lines.push("  conditions = " + rConditionsVec(condNames) + ",");
+      lines.push('  sweep_var = "' + swept.name + '",');
+      lines.push("  sweep_range = " + rRangeLiteral(swept.lo, swept.hi) + ",");
+      lines.push("  thrY = " + rScalar(thrY) + ",");
+      lines.push("  thrX_default = " + (thrXDefault || "7") + ",");
+      if (precalLine) lines.push("  " + precalLine + ",");
+      commonTail.forEach(function(l){ lines.push("  " + l + ","); });
+      lines.push("  pri.cut = " + priCut + ",");
+      lines.push('  extract_mode = "' + extractMode + '",');
+      lines.push("  return_details = TRUE");
+      lines.push(")");
+    }
+
+    if (state.tab === "ctm"){
+      varName = "res_mcts";
+      var pairsM = state.conds.filter(function(c){ return !c.precal; }).map(function(c){
+        return [c.name, c.mode === "range" ? rRangeLiteral(c.lo, c.hi) : rScalar(c.value)];
+      });
+      lines.push(varName + " <- ctSweepM(");
+      lines.push("  dat = " + dat + ",");
+      lines.push('  outcome = "' + outcome + '",');
+      lines.push("  conditions = " + rConditionsVec(condNames) + ",");
+      lines.push("  sweep_list = " + rNamedList(pairsM) + ",");
+      lines.push("  thrY = " + rScalar(thrY) + ",");
+      if (precalLine) lines.push("  " + precalLine + ",");
+      commonTail.forEach(function(l){ lines.push("  " + l + ","); });
+      lines.push("  pri.cut = " + priCut + ",");
+      lines.push('  extract_mode = "' + extractMode + '",');
+      lines.push("  return_details = TRUE");
+      lines.push(")");
+    }
+
+    if (state.tab === "dt"){
+      varName = "res_dts";
+      var pairsD = state.conds.filter(function(c){ return !c.precal; }).map(function(c){
+        return [c.name, c.mode === "range" ? rRangeLiteral(c.lo, c.hi) : rScalar(c.value)];
+      });
+      lines.push(varName + " <- dtSweep(");
+      lines.push("  dat = " + dat + ",");
+      lines.push('  outcome = "' + outcome + '",');
+      lines.push("  conditions = " + rConditionsVec(condNames) + ",");
+      lines.push("  sweep_list_X = " + rNamedList(pairsD) + ",");
+      lines.push("  sweep_range_Y = " + sweepRange + ",");
+      if (precalLine) lines.push("  " + precalLine + ",");
+      commonTail.forEach(function(l){ lines.push("  " + l + ","); });
+      lines.push("  pri.cut = " + priCut + ",");
+      lines.push('  extract_mode = "' + extractMode + '",');
+      lines.push("  return_details = TRUE");
+      lines.push(")");
+    }
+
+    lines.push("");
+    lines.push("summary(" + varName + ")");
+
+    $("codeOut").innerHTML = highlight(lines.join("\n"));
+  }
+
+  function highlight(code){
+    var esc = escapeHtml(code);
+    esc = esc.replace(/(&quot;|"[^"\n]*")/g, function(m){ return m; }); // no-op placeholder
+    // strings
+    esc = esc.replace(/"([^"\\]|\\.)*"/g, function(m){ return '<span class="s">'+m+'</span>'; });
+    // numbers / ranges
+    esc = esc.replace(/\b(\d+(\.\d+)?(:\d+)?)\b/g, function(m){ return '<span class="nnum">'+m+'</span>'; });
+    // keywords / function names
+    esc = esc.replace(/\b(otSweep|ctSweepS|ctSweepM|dtSweep|summary|TRUE|FALSE|list|c)\b(?=\()/g, function(m){ return '<span class="k">'+m+'</span>'; });
+    esc = esc.replace(/\b(TRUE|FALSE)\b/g, function(m){ return '<span class="k">'+m+'</span>'; });
+    return esc;
+  }
+
+  // ---- sweep_var selector for ctSweepS tab (injected into DOM) ---------
+
+  function ensureCtsExtras(){
+    var section = $("condSection");
+    var existing = document.getElementById("ctsExtras");
+    if (state.tab !== "cts"){
+      if (existing) existing.remove();
+      return;
+    }
+    if (!existing){
+      var div = document.createElement("div");
+      div.id = "ctsExtras";
+      div.className = "row2";
+      div.style.marginTop = "10px";
+      div.innerHTML =
+        '<div class="field">'+
+          '<label>Condition to sweep</label>'+
+          '<select id="sweepVarSelect"></select>'+
+        '</div>'+
+        '<div class="field">'+
+          '<label>Its threshold range <span class="hint">e.g. 6:9</span></label>'+
+          '<div style="display:flex;gap:6px;">'+
+            '<input type="text" id="sweepVarLo" value="6">'+
+            '<input type="text" id="sweepVarHi" value="9">'+
+          '</div>'+
+        '</div>'+
+        '<div class="field">'+
+          '<label>thrX_default <span class="hint">threshold for all other conditions</span></label>'+
+          '<input type="text" id="thrXDefault" value="7">'+
+        '</div>';
+      section.parentNode.insertBefore(div, section);
+    }
+    var sel = $("sweepVarSelect");
+    var names = state.conds.filter(function(c){ return !c.precal; }).map(function(c){ return c.name; });
+    if (names.length === 0){
+      sel.innerHTML = '<option value="">(no sweepable conditions — all marked fuzzy)</option>';
+    } else {
+      sel.innerHTML = names.map(function(n){ return '<option value="'+escapeHtml(n)+'">'+escapeHtml(n)+'</option>'; }).join("");
+    }
+    sel.addEventListener("change", function(){
+      var c = state.conds.find(function(x){ return x.name === sel.value; });
+      if (c){ $("sweepVarLo").value = c.lo; $("sweepVarHi").value = c.hi; }
+      renderCode();
+    });
+    $("sweepVarLo").oninput = function(){
+      var c = state.conds.find(function(x){ return x.name === sel.value; });
+      if (c) c.lo = $("sweepVarLo").value;
+      renderCode();
+    };
+    $("sweepVarHi").oninput = function(){
+      var c = state.conds.find(function(x){ return x.name === sel.value; });
+      if (c) c.hi = $("sweepVarHi").value;
+      renderCode();
+    };
+    $("thrXDefault").oninput = renderCode;
+  }
+
+  // patch renderCode's ctSweepS branch to read the injected controls
+  var _origRenderCode = renderCode;
+  renderCode = function(){
+    ensureCtsExtras();
+    _origRenderCode();
+  };
+
+  // ---- wire up top-level controls --------------------------------------
+
+  document.querySelectorAll(".tab").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      state.tab = btn.getAttribute("data-tab");
+      updateFieldVisibility();
+      rebuildCondTable();
+    });
+  });
+
+  ["dat","outcome","thrY","sweepRange","inclCut","nCut","extractMode","priCut"].forEach(function(id){
+    var el = $(id);
+    el.addEventListener("input", renderCode);
+    el.addEventListener("change", renderCode);
+  });
+  $("solutionType").addEventListener("change", function(){ updateSolutionHelp(); renderCode(); });
+  $("conditions").addEventListener("input", rebuildCondTable);
+
+  $("copyBtn").addEventListener("click", function(){
+    var text = $("codeOut").textContent;
+    var btn = $("copyBtn");
+    function done(){
+      btn.textContent = "Copied";
+      btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = "Copy code"; btn.classList.remove("copied"); }, 1400);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  });
+  function fallbackCopy(text, cb){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+    cb();
+  }
+
+  updateFieldVisibility();
+  updateSolutionHelp();
+  rebuildCondTable();
+})();
+</script>
