@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Threshold-Sweep QCA">
-<meta property="og:description" content="Provides threshold sweep methods for Qualitative Comparative Analysis (QCA). Implements Condition Threshold Sweep-Single (CTS-S), Condition Threshold Sweep-Multiple (CTS-M), Outcome Threshold Sweep (OTS), and Dual Threshold Sweep (DTS) for systematic exploration of threshold calibration effects on crisp-set QCA results. These methods extend traditional robustness approaches by treating threshold variation as an exploratory tool for discovering causal structures. Also provides Fiss (2011) &lt;doi:10.5465/amj.2011.60263120&gt; core/peripheral condition classification via compute_fiss_core() and generate_fiss_chart(), enabling four-symbol configuration charts that distinguish core conditions (present in both parsimonious and intermediate solutions) from peripheral conditions (intermediate only). Built on top of the QCA package by Dusa (2019) &lt;doi:10.1007/978-3-319-75668-4&gt;, with function arguments following QCA conventions. Based on set-theoretic methods by Ragin (2008) &lt;doi:10.7208/chicago/9780226702797.001.0001&gt; and established robustness protocols by Oana and Schneider (2024) &lt;doi:10.1177/00491241211036158&gt;. This package supersedes TSQCA; see the NEWS file for migration guidance.">
+<meta property="og:description" content="Provides threshold sweep methods for Qualitative Comparative Analysis (QCA). Implements Condition Threshold Sweep (CTS, for one or several conditions), Outcome Threshold Sweep (OTS), and Dual Threshold Sweep (DTS) for systematic exploration of threshold calibration effects on crisp-set QCA results. These methods extend traditional robustness approaches by treating threshold variation as an explicit analytical dimension and recording the sufficiency solution obtained at each threshold setting. Also provides Fiss (2011) &lt;doi:10.5465/amj.2011.60263120&gt; core/peripheral condition classification via compute_fiss_core() and generate_fiss_chart(), enabling four-symbol configuration charts that distinguish core conditions (present in both parsimonious and intermediate solutions) from peripheral conditions (intermediate only). Built on top of the QCA package by Dusa (2019) &lt;doi:10.1007/978-3-319-75668-4&gt;, with function arguments following QCA conventions. Based on set-theoretic methods by Ragin (2008) &lt;doi:10.7208/chicago/9780226702797.001.0001&gt; and established robustness protocols by Oana and Schneider (2024) &lt;doi:10.1177/00491241211036158&gt;. This package supersedes TSQCA; see the NEWS file for migration guidance.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ThSQCA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.7</span>
       </span>
     </div>
 
@@ -84,11 +84,11 @@
 <div class="page-header"><h1 id="thsqca">ThSQCA<a class="anchor" aria-label="anchor" href="#thsqca"></a>
 </h1></div>
 <p><a href="https://doi.org/10.5281/zenodo.17899390" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17899390.svg" alt="DOI"></a></p>
-<p>ThSQCA is an R package implementing <strong>Threshold-Sweep QCA (TS-QCA)</strong>,<br>
+<p>ThSQCA is an R package implementing <strong>Threshold-Sweep QCA (ThS-QCA)</strong>,<br>
 a framework for systematically varying the thresholds used to binarize<br>
 the outcome and conditions in crisp-set QCA.</p>
 <p>After calibration, QCA results may change depending on how thresholds are set.<br>
-TS-QCA evaluates this sensitivity by automatically:</p>
+ThS-QCA evaluates this sensitivity by automatically:</p>
 <ul>
 <li>binarizing the data using many threshold candidates<br>
 </li>
@@ -101,21 +101,48 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <p>Implemented sweep types:</p>
 <ul>
 <li>
-<strong>CTS-QCA (ctSweepS)</strong>: Sweep the threshold of one X<br>
+<strong>Condition Threshold Sweep, CTS (<code>ctSweepS</code>)</strong>: Sweep the threshold of one X<br>
 </li>
 <li>
-<strong>MCTS-QCA (ctSweepM)</strong>: Sweep thresholds of multiple X conditions<br>
+<strong>Condition Threshold Sweep, CTS (<code>ctSweepM</code>)</strong>: Sweep thresholds of multiple X conditions<br>
 </li>
 <li>
-<strong>OTS-QCA (otSweep)</strong>: Sweep the threshold of Y only<br>
+<strong>Outcome Threshold Sweep, OTS (<code>otSweep</code>)</strong>: Sweep the threshold of Y only<br>
 </li>
 <li>
-<strong>DTS-QCA (dtSweep)</strong>: Sweep X and Y thresholds simultaneously (2D sweep)</li>
+<strong>Dual Threshold Sweep, DTS (<code>dtSweep</code>)</strong>: Sweep X and Y thresholds simultaneously (2D sweep)</li>
 </ul>
 <blockquote>
 <p><strong>Scope:</strong> ThSQCA focuses on <strong>sufficiency analysis</strong>. Necessity analysis is planned for future versions.</p>
 </blockquote>
+<div class="section level2">
+<h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
+</h2>
+<ul>
+<li>
+<a href="https://im-research-yt.github.io/ThSQCA/articles/ThSQCA_Tutorial_EN.html" class="external-link">ThSQCA Tutorial</a>: a step-by-step introduction to the four sweeps.</li>
+<li>
+<a href="https://im-research-yt.github.io/ThSQCA/articles/ThSQCA_Reproducible_EN.html" class="external-link">ThSQCA Reproducible Code</a>: copy-and-run code suited to an article appendix.</li>
+</ul>
+<p>Both are also installed with the package: <code><a href="articles/ThSQCA_Tutorial_EN.html">vignette("ThSQCA_Tutorial_EN", package = "ThSQCA")</a></code> and <code><a href="articles/ThSQCA_Reproducible_EN.html">vignette("ThSQCA_Reproducible_EN", package = "ThSQCA")</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="try-it-in-the-browser">Try it in the browser<a class="anchor" aria-label="anchor" href="#try-it-in-the-browser"></a>
+</h2>
+<p>Two interactive helpers generate ready-to-run R code in your browser. They do not run any analysis themselves.</p>
+<ul>
+<li>
+<a href="https://im-research-yt.github.io/ThSQCA/tools/sweep-builder.html" class="external-link">Sweep Builder</a>: turn your QCA analysis into threshold-sweep code (<code><a href="reference/otSweep.html">otSweep()</a></code>, <code><a href="reference/ctSweepS.html">ctSweepS()</a></code>, <code><a href="reference/ctSweepM.html">ctSweepM()</a></code>, <code><a href="reference/dtSweep.html">dtSweep()</a></code>).</li>
+<li>
+<a href="https://im-research-yt.github.io/ThSQCA/tools/qca-quickstart.html" class="external-link">QCA Quickstart</a>: a basic <code><a href="https://rdrr.io/pkg/QCA/man/truthTable.html" class="external-link">truthTable()</a></code> / <code><a href="https://rdrr.io/pkg/QCA/man/minimize.html" class="external-link">minimize()</a></code> script for data you have already calibrated.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="questions-and-feedback">Questions and feedback<a class="anchor" aria-label="anchor" href="#questions-and-feedback"></a>
+</h2>
+<p>Bug reports, questions, and feature requests are welcome through <a href="https://github.com/im-research-yt/ThSQCA/issues" class="external-link">GitHub Issues</a>.</p>
 <hr>
+</div>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h2>
@@ -297,7 +324,13 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <span></span>
 <span><span class="co"># Generate simple report (for journal manuscripts)</span></span>
 <span><span class="fu"><a href="reference/generate_report.html">generate_report</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"my_analysis_simple.md"</span>, dat <span class="op">=</span> <span class="va">mydata</span>, format <span class="op">=</span> <span class="st">"simple"</span><span class="op">)</span></span></code></pre></div>
-<p>Reports include: - Analysis settings (for reproducibility) - Solution formulas with essential/selective prime implicants - Fit measures (consistency, coverage, PRI) - Cross-threshold comparison tables</p>
+<p>Reports include:</p>
+<ul>
+<li>Analysis settings (for reproducibility)</li>
+<li>Solution formulas with essential/selective prime implicants</li>
+<li>Fit measures (consistency, coverage, PRI)</li>
+<li>Cross-threshold comparison tables</li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="configuration-charts">Configuration Charts<a class="anchor" aria-label="anchor" href="#configuration-charts"></a>
@@ -390,7 +423,11 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Released version (CRAN)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ThSQCA"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Development version (GitHub)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"im-research-yt/ThSQCA"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -451,7 +488,11 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/dusadrian/QCA" class="external-link">QCA</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/im-research-yt/ThSQCA" class="external-link">ThSQCA</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"sample_data.csv"</span>, fileEncoding <span class="op">=</span> <span class="st">"UTF-8"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">sample_data</span><span class="op">)</span>   <span class="co"># bundled example data (Y, X1, X2, X3)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">sample_data</span></span>
+<span></span>
+<span><span class="co"># To use your own data instead:</span></span>
+<span><span class="co"># dat &lt;- read.csv("your_data.csv", fileEncoding = "UTF-8")</span></span>
 <span></span>
 <span><span class="va">outcome</span>  <span class="op">&lt;-</span> <span class="st">"Y"</span></span>
 <span><span class="va">conditions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X1"</span>, <span class="st">"X2"</span>, <span class="st">"X3"</span><span class="op">)</span></span>
@@ -477,7 +518,11 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <div class="section level4">
 <h4 id="why-threshold--1-for-binary-variables">Why Threshold = 1 for Binary Variables?<a class="anchor" aria-label="anchor" href="#why-threshold--1-for-binary-variables"></a>
 </h4>
-<p>The <code><a href="reference/qca_bin.html">qca_bin()</a></code> function uses <code>x &gt;= thr</code> for binarization: - If <code>x = 0</code>: <code>0 &gt;= 1</code> → FALSE → <strong>0</strong> (preserved) - If <code>x = 1</code>: <code>1 &gt;= 1</code> → TRUE → <strong>1</strong> (preserved)</p>
+<p>The <code><a href="reference/qca_bin.html">qca_bin()</a></code> function uses <code>x &gt;= thr</code> for binarization:</p>
+<ul>
+<li>If <code>x = 0</code>: <code>0 &gt;= 1</code> → FALSE → <strong>0</strong> (preserved)</li>
+<li>If <code>x = 1</code>: <code>1 &gt;= 1</code> → TRUE → <strong>1</strong> (preserved)</li>
+</ul>
 </div>
 <div class="section level4">
 <h4 id="example-mixed-data">Example: Mixed Data<a class="anchor" aria-label="anchor" href="#example-mixed-data"></a>
@@ -517,7 +562,7 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <h2 id="usage-examples">Usage Examples<a class="anchor" aria-label="anchor" href="#usage-examples"></a>
 </h2>
 <div class="section level3">
-<h3 id="id_1-cts-qca-single-condition-x-sweep-ctsweeps">1. CTS-QCA: single-condition X sweep (ctSweepS)<a class="anchor" aria-label="anchor" href="#id_1-cts-qca-single-condition-x-sweep-ctsweeps"></a>
+<h3 id="id_1-cts-single-condition-x-sweep-ctsweeps">1. CTS: single-condition X sweep (ctSweepS)<a class="anchor" aria-label="anchor" href="#id_1-cts-single-condition-x-sweep-ctsweeps"></a>
 </h3>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sweep_var</span> <span class="op">&lt;-</span> <span class="st">"X3"</span>      <span class="co"># Condition (X) whose threshold will be varied</span></span>
@@ -539,7 +584,7 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_cts</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="id_2-mcts-qca-multi-condition-x-sweep-ctsweepm">2. MCTS-QCA: multi-condition X sweep (ctSweepM)<a class="anchor" aria-label="anchor" href="#id_2-mcts-qca-multi-condition-x-sweep-ctsweepm"></a>
+<h3 id="id_2-cts-multi-condition-x-sweep-ctsweepm">2. CTS: multi-condition X sweep (ctSweepM)<a class="anchor" aria-label="anchor" href="#id_2-cts-multi-condition-x-sweep-ctsweepm"></a>
 </h3>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Threshold candidates for each X</span></span>
@@ -560,7 +605,7 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_mcts</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="id_3-ots-qca-outcome-y-sweep-otsweep">3. OTS-QCA: outcome Y sweep (otSweep)<a class="anchor" aria-label="anchor" href="#id_3-ots-qca-outcome-y-sweep-otsweep"></a>
+<h3 id="id_3-ots-outcome-y-sweep-otsweep">3. OTS: outcome Y sweep (otSweep)<a class="anchor" aria-label="anchor" href="#id_3-ots-outcome-y-sweep-otsweep"></a>
 </h3>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">thrX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>X1 <span class="op">=</span> <span class="fl">7</span>, X2 <span class="op">=</span> <span class="fl">7</span>, X3 <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>  <span class="co"># Fixed thresholds for X</span></span>
@@ -580,7 +625,7 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <span><span class="fu"><a href="reference/generate_report.html">generate_report</a></span><span class="op">(</span><span class="va">res_ots</span>, <span class="st">"ots_report.md"</span>, dat <span class="op">=</span> <span class="va">dat</span>, format <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="id_4-dts-qca-2d-sweep-of-x-and-y-dtsweep">4. DTS-QCA: 2D sweep of X and Y (dtSweep)<a class="anchor" aria-label="anchor" href="#id_4-dts-qca-2d-sweep-of-x-and-y-dtsweep"></a>
+<h3 id="id_4-dts-2d-sweep-of-x-and-y-dtsweep">4. DTS: 2D sweep of X and Y (dtSweep)<a class="anchor" aria-label="anchor" href="#id_4-dts-2d-sweep-of-x-and-y-dtsweep"></a>
 </h3>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># X-side threshold candidates (multiple conditions)</span></span>
@@ -610,6 +655,15 @@ TS-QCA evaluates this sensitivity by automatically:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">sample_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sample_data</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>To cite the package, use <code>citation("ThSQCA")</code>. The accompanying preprint describing the threshold-sweep workflow is:</p>
+<ul>
+<li>Toyoda, Y. (2026). ThSQCA: Reproducible Threshold-Sweep Workflows for QCA in R. <em>SocArXiv</em>. <a href="https://doi.org/10.31235/osf.io/yb8xs_v1" class="external-link">DOI: 10.31235/osf.io/yb8xs_v1</a>
+</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>

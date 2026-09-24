@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ThSQCA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.7</span>
       </span>
     </div>
 
@@ -160,7 +160,7 @@ optional QCA package output for verification.</p>
 <code class="sourceCode R"><span><span class="va">thrY_base</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
 <span><span class="va">thrX_base</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
 <span></span>
-<span><span class="co"># Fixed X thresholds (for OTS–QCA)</span></span>
+<span><span class="co"># Fixed X thresholds (for OTS)</span></span>
 <span><span class="va">thrX_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  X1 <span class="op">=</span> <span class="va">thrX_base</span>,</span>
 <span>  X2 <span class="op">=</span> <span class="va">thrX_base</span>,</span>
@@ -233,7 +233,7 @@ optional QCA package output for verification.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="ctsqca-ctsweeps">4. CTS–QCA (ctSweepS)<a class="anchor" aria-label="anchor" href="#ctsqca-ctsweeps"></a>
+<h2 id="cts-single-condition-ctsweeps">4. CTS, single condition (ctSweepS)<a class="anchor" aria-label="anchor" href="#cts-single-condition-ctsweeps"></a>
 </h2>
 <p>Sweep a <strong>single condition X</strong> (example: X3).</p>
 <div class="section level3">
@@ -258,8 +258,8 @@ optional QCA package output for verification.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_cts</span><span class="op">)</span></span>
-<span><span class="co">#&gt; CTS-QCA Summary</span></span>
-<span><span class="co">#&gt; =============== </span></span>
+<span><span class="co">#&gt; CTS (single) Summary</span></span>
+<span><span class="co">#&gt; ==================== </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Analysis Parameters:</span></span>
 <span><span class="co">#&gt;   Outcome: Y </span></span>
@@ -294,8 +294,8 @@ optional QCA package output for verification.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_cts_int</span><span class="op">)</span></span>
-<span><span class="co">#&gt; CTS-QCA Summary</span></span>
-<span><span class="co">#&gt; =============== </span></span>
+<span><span class="co">#&gt; CTS (single) Summary</span></span>
+<span><span class="co">#&gt; ==================== </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Analysis Parameters:</span></span>
 <span><span class="co">#&gt;   Outcome: Y </span></span>
@@ -312,12 +312,12 @@ optional QCA package output for verification.</p>
 <span><span class="co">#&gt;          9 X3 + X1*X2 1.000 0.515           1</span></span></code></pre></div>
 <p>Export:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">res_cts</span><span class="op">$</span><span class="va">summary</span>, file <span class="op">=</span> <span class="st">"TSQCA_CTS_results.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">res_cts</span><span class="op">$</span><span class="va">summary</span>, file <span class="op">=</span> <span class="st">"ThSQCA_CTS_results.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
 <div class="section level2">
-<h2 id="mctsqca-ctsweepm">5. MCTS–QCA (ctSweepM)<a class="anchor" aria-label="anchor" href="#mctsqca-ctsweepm"></a>
+<h2 id="cts-multiple-conditions-ctsweepm">5. CTS, multiple conditions (ctSweepM)<a class="anchor" aria-label="anchor" href="#cts-multiple-conditions-ctsweepm"></a>
 </h2>
 <p>Sweep <strong>multiple X thresholds simultaneously</strong>.</p>
 <div class="section level3">
@@ -342,8 +342,8 @@ optional QCA package output for verification.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_mcts</span><span class="op">)</span></span>
-<span><span class="co">#&gt; MCTS-QCA Summary</span></span>
-<span><span class="co">#&gt; ================ </span></span>
+<span><span class="co">#&gt; CTS (multiple) Summary</span></span>
+<span><span class="co">#&gt; ====================== </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Analysis Parameters:</span></span>
 <span><span class="co">#&gt;   Outcome: Y </span></span>
@@ -380,8 +380,8 @@ optional QCA package output for verification.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_mcts_int</span><span class="op">)</span></span>
-<span><span class="co">#&gt; MCTS-QCA Summary</span></span>
-<span><span class="co">#&gt; ================ </span></span>
+<span><span class="co">#&gt; CTS (multiple) Summary</span></span>
+<span><span class="co">#&gt; ====================== </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Analysis Parameters:</span></span>
 <span><span class="co">#&gt;   Outcome: Y </span></span>
@@ -402,12 +402,12 @@ optional QCA package output for verification.</p>
 <span><span class="co">#&gt;  X1=7, X2=7, X3=7        8     X3 + X1*X2 0.906 0.879           1</span></span></code></pre></div>
 <p>Export:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">res_mcts</span><span class="op">$</span><span class="va">summary</span>, file <span class="op">=</span> <span class="st">"TSQCA_MCTS_results.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">res_mcts</span><span class="op">$</span><span class="va">summary</span>, file <span class="op">=</span> <span class="st">"ThSQCA_CTS_multi_results.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
 <div class="section level2">
-<h2 id="otsqca-otsweep">6. OTS–QCA (otSweep)<a class="anchor" aria-label="anchor" href="#otsqca-otsweep"></a>
+<h2 id="ots-otsweep">6. OTS (otSweep)<a class="anchor" aria-label="anchor" href="#ots-otsweep"></a>
 </h2>
 <p>Sweep <strong>only the outcome threshold (Y)</strong>.</p>
 <div class="section level3">
@@ -427,8 +427,8 @@ optional QCA package output for verification.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_ots</span><span class="op">)</span></span>
-<span><span class="co">#&gt; OTS-QCA Summary</span></span>
-<span><span class="co">#&gt; =============== </span></span>
+<span><span class="co">#&gt; OTS Summary</span></span>
+<span><span class="co">#&gt; =========== </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Analysis Parameters:</span></span>
 <span><span class="co">#&gt;   Outcome: Y </span></span>
@@ -460,8 +460,8 @@ optional QCA package output for verification.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_ots_int</span><span class="op">)</span></span>
-<span><span class="co">#&gt; OTS-QCA Summary</span></span>
-<span><span class="co">#&gt; =============== </span></span>
+<span><span class="co">#&gt; OTS Summary</span></span>
+<span><span class="co">#&gt; =========== </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Analysis Parameters:</span></span>
 <span><span class="co">#&gt;   Outcome: Y </span></span>
@@ -477,12 +477,12 @@ optional QCA package output for verification.</p>
 <span><span class="co">#&gt;     8 No solution    NA    NA           0</span></span></code></pre></div>
 <p>Export:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">res_ots</span><span class="op">$</span><span class="va">summary</span>, file <span class="op">=</span> <span class="st">"TSQCA_OTS_results.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">res_ots</span><span class="op">$</span><span class="va">summary</span>, file <span class="op">=</span> <span class="st">"ThSQCA_OTS_results.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
 <div class="section level2">
-<h2 id="dtsqca-dtsweep">7. DTS–QCA (dtSweep)<a class="anchor" aria-label="anchor" href="#dtsqca-dtsweep"></a>
+<h2 id="dts-dtsweep">7. DTS (dtSweep)<a class="anchor" aria-label="anchor" href="#dts-dtsweep"></a>
 </h2>
 <p>Two-dimensional sweep: <strong>X thresholds × Y
 thresholds</strong>.</p>
@@ -510,8 +510,8 @@ thresholds</strong>.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_dts</span><span class="op">)</span></span>
-<span><span class="co">#&gt; DTS-QCA Summary</span></span>
-<span><span class="co">#&gt; =============== </span></span>
+<span><span class="co">#&gt; DTS Summary</span></span>
+<span><span class="co">#&gt; =========== </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Analysis Parameters:</span></span>
 <span><span class="co">#&gt;   Outcome: Y </span></span>
@@ -556,8 +556,8 @@ thresholds</strong>.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_dts_int</span><span class="op">)</span></span>
-<span><span class="co">#&gt; DTS-QCA Summary</span></span>
-<span><span class="co">#&gt; =============== </span></span>
+<span><span class="co">#&gt; DTS Summary</span></span>
+<span><span class="co">#&gt; =========== </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Analysis Parameters:</span></span>
 <span><span class="co">#&gt;   Outcome: Y </span></span>
@@ -586,7 +586,7 @@ thresholds</strong>.</p>
 <span><span class="co">#&gt;     7        8 X1=7, X2=7, X3=7     X3 + X1*X2 0.906 0.879           1</span></span></code></pre></div>
 <p>Export:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">res_dts</span><span class="op">$</span><span class="va">summary</span>, file <span class="op">=</span> <span class="st">"TSQCA_DTS_results.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">res_dts</span><span class="op">$</span><span class="va">summary</span>, file <span class="op">=</span> <span class="st">"ThSQCA_DTS_results.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -643,13 +643,13 @@ analysis.</p>
 <h3 id="full-report">Full Report<a class="anchor" aria-label="anchor" href="#full-report"></a>
 </h3>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/generate_report.html">generate_report</a></span><span class="op">(</span><span class="va">res_ots</span>, <span class="st">"TSQCA_OTS_report_full.md"</span>, dat <span class="op">=</span> <span class="va">dat</span>, format <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/generate_report.html">generate_report</a></span><span class="op">(</span><span class="va">res_ots</span>, <span class="st">"ThSQCA_OTS_report_full.md"</span>, dat <span class="op">=</span> <span class="va">dat</span>, format <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="simple-report-for-manuscripts">Simple Report (for manuscripts)<a class="anchor" aria-label="anchor" href="#simple-report-for-manuscripts"></a>
 </h3>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/generate_report.html">generate_report</a></span><span class="op">(</span><span class="va">res_ots</span>, <span class="st">"TSQCA_OTS_report_simple.md"</span>, dat <span class="op">=</span> <span class="va">dat</span>, format <span class="op">=</span> <span class="st">"simple"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/generate_report.html">generate_report</a></span><span class="op">(</span><span class="va">res_ots</span>, <span class="st">"ThSQCA_OTS_report_simple.md"</span>, dat <span class="op">=</span> <span class="va">dat</span>, format <span class="op">=</span> <span class="st">"simple"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -747,7 +747,7 @@ can also generate them separately:</p>
 <div class="section level3">
 <h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h3>
-<p>For more information on TS-QCA methodology, see:</p>
+<p>For more information on ThS-QCA methodology, see:</p>
 <ul>
 <li>Ragin, C. C. (2008). <em>Redesigning Social Inquiry: Fuzzy Sets and
 Beyond</em>. University of Chicago Press. DOI: <a href="https://doi.org/10.7208/chicago/9780226702797.001.0001" class="external-link">10.7208/chicago/9780226702797.001.0001</a>
@@ -865,7 +865,7 @@ Intermediate : X3 + X1*X2
 <code class="sourceCode R"><span><span class="co"># Full report with Fiss four-symbol charts</span></span>
 <span><span class="fu"><a href="../reference/generate_report.html">generate_report</a></span><span class="op">(</span></span>
 <span>  <span class="va">res_fiss</span>,</span>
-<span>  output_file       <span class="op">=</span> <span class="st">"TSQCA_Fiss_report.md"</span>,</span>
+<span>  output_file       <span class="op">=</span> <span class="st">"ThSQCA_Fiss_report.md"</span>,</span>
 <span>  format            <span class="op">=</span> <span class="st">"full"</span>,</span>
 <span>  dat               <span class="op">=</span> <span class="va">dat</span>,</span>
 <span>  include_fiss_core <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># activates four-symbol charts</span></span>
@@ -928,7 +928,7 @@ keeping in mind.</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] QCA_3.25     admisc_0.41  ThSQCA_2.0.6</span></span>
+<span><span class="co">#&gt; [1] QCA_3.25     admisc_0.41  ThSQCA_2.0.7</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] cli_3.6.6         knitr_1.52        rlang_1.3.0       xfun_0.61        </span></span>
