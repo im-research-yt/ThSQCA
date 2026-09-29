@@ -273,6 +273,11 @@ install.packages("devtools")
 devtools::install_github("im-research-yt/ThSQCA")
 ```
 
+> **Note:** The current CRAN release is version 2.0.8. The GitHub version
+> additionally contains bug fixes for reports, configuration charts and helper
+> functions that are planned for the next CRAN release (2.0.9); see `NEWS.md`.
+> The solutions and fit measures returned by the sweep functions are unchanged.
+
 ## Relationship with QCA Package
 
 ThSQCA is built on top of the [QCA package](https://cran.r-project.org/package=QCA) (Duşa, 2019). All function arguments follow QCA conventions:
