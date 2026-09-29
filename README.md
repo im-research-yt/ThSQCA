@@ -193,6 +193,13 @@ generate_report(result, "my_report.md", dat = mydata, include_chart = FALSE)
 generate_report(result, "my_report.md", dat = mydata, chart_symbol_set = "latex")
 ```
 
+For charts that distinguish core and peripheral conditions (Fiss, 2011), run
+`compute_fiss_core()` on an `otSweep()` or `ctSweepS()` result with
+`include = "?"` and `dir.exp`, then `generate_fiss_chart()`. As in Fiss's
+solution tables, each configuration of the intermediate solution is compared
+with the parsimonious term(s) it contains. See `?compute_fiss_core` for how
+tied parsimonious solutions are handled.
+
 Standalone chart functions are also available:
 
 ```r
@@ -468,7 +475,11 @@ str(sample_data)
 
 ## Citation
 
-To cite the package, use `citation("ThSQCA")`. The accompanying preprint describing the threshold-sweep workflow is:
+To cite the method, please cite the methodology paper; to cite the package, use `citation("ThSQCA")`.
+
+- Toyoda, Y. (2026). Threshold-sweep QCA: threshold dependence as an analytical dimension. *Quality & Quantity*. [DOI: 10.1007/s11135-026-03092-3](https://doi.org/10.1007/s11135-026-03092-3)
+
+The accompanying preprint describing the threshold-sweep workflow is:
 
 - Toyoda, Y. (2026). ThSQCA: Reproducible Threshold-Sweep Workflows for QCA in R. *SocArXiv*. [DOI: 10.31235/osf.io/yb8xs_v1](https://doi.org/10.31235/osf.io/yb8xs_v1)
 

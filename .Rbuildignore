@@ -17,3 +17,7 @@
 ^membership_check\.R$
 ^membership_check_output\.txt$
 ^render_tutorial_check\.R$
+^ThSQCA_.*\.patch$
+^report\.md$
+^seed25\.md$
+
