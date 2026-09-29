@@ -15,9 +15,8 @@
 <url><loc>/reference/add_metrics_rows.html</loc></url>
 <url><loc>/reference/build_config_matrix.html</loc></url>
 <url><loc>/reference/build_fiss_matrix.html</loc></url>
-<url><loc>/reference/build_parsim_status_map.html</loc></url>
 <url><loc>/reference/build_single_chart.html</loc></url>
-<url><loc>/reference/classify_term_conditions.html</loc></url>
+<url><loc>/reference/classify_term_fiss.html</loc></url>
 <url><loc>/reference/collect_unique_i_sol.html</loc></url>
 <url><loc>/reference/compute_fiss_core.html</loc></url>
 <url><loc>/reference/config_chart_from_paths.html</loc></url>
@@ -29,7 +28,6 @@
 <url><loc>/reference/dtSweep.html</loc></url>
 <url><loc>/reference/escape_md.html</loc></url>
 <url><loc>/reference/extract_all_metrics.html</loc></url>
-<url><loc>/reference/extract_cond_status_map.html</loc></url>
 <url><loc>/reference/extract_conditions_from_paths.html</loc></url>
 <url><loc>/reference/extract_path_metrics_for_chart.html</loc></url>
 <url><loc>/reference/extract_paths_from_solution.html</loc></url>
@@ -38,6 +36,8 @@
 <url><loc>/reference/extract_solution_list.html</loc></url>
 <url><loc>/reference/extract_solution_metrics_for_chart.html</loc></url>
 <url><loc>/reference/extract_terms.html</loc></url>
+<url><loc>/reference/fiss_threshold_label.html</loc></url>
+<url><loc>/reference/format_models_expr.html</loc></url>
 <url><loc>/reference/format_qca_solution.html</loc></url>
 <url><loc>/reference/format_qca_solutions.html</loc></url>
 <url><loc>/reference/format_qca_term.html</loc></url>
@@ -54,6 +54,8 @@
 <url><loc>/reference/get_n_solutions.html</loc></url>
 <url><loc>/reference/identify_epi.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/model_key.html</loc></url>
+<url><loc>/reference/nested_core_conditions.html</loc></url>
 <url><loc>/reference/otSweep.html</loc></url>
 <url><loc>/reference/parse_path_conditions.html</loc></url>
 <url><loc>/reference/parse_solution_terms.html</loc></url>
@@ -67,6 +69,8 @@
 <url><loc>/reference/sanitize_truthtable.html</loc></url>
 <url><loc>/reference/split_solution_terms.html</loc></url>
 <url><loc>/reference/summary.tsqca_result.html</loc></url>
+<url><loc>/reference/term_status.html</loc></url>
+<url><loc>/reference/trace_intermediate_sources.html</loc></url>
 <url><loc>/reference/validate_pre_calibrated.html</loc></url>
 <url><loc>/reference/write_full_report.html</loc></url>
 <url><loc>/reference/write_simple_report.html</loc></url>
