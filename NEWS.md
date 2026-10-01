@@ -1,4 +1,4 @@
-# ThSQCA (development version)
+# ThSQCA 2.0.9
 
 ## Documentation
 
@@ -9,6 +9,13 @@
   "Toyoda (2026b, *Quality & Quantity*)" in the 2.0.0 notes below.)
 
 ## Bug fixes
+
+* The sweep functions reported "No solution" without any message when
+  `QCA::minimize()` raised an error, which happens for condition names with
+  non-ASCII characters (for example Japanese). They now warn about such names
+  at the start, and warn at the end if any setting was reported as "No
+  solution" because QCA failed, quoting the error message. Use ASCII names
+  for conditions.
 
 * `generate_report(format = "simple")` printed `*inclS = N/A, covS = N/A*`
   under each threshold heading in "Solutions Overview" whenever `otSweep()`

@@ -1,7 +1,7 @@
 Package: ThSQCA
 Type: Package
 Title: Threshold-Sweep QCA
-Version: 2.0.8
+Version: 2.0.9
 Authors@R: c(
     person("Yuki", "Toyoda", role = c("aut", "cre"),
            email = "yuki.toyoda.ds@hosei.ac.jp"),
@@ -35,7 +35,7 @@ License: MIT + file LICENSE
 URL: https://github.com/im-research-yt/ThSQCA,
     https://doi.org/10.5281/zenodo.17899390
 BugReports: https://github.com/im-research-yt/ThSQCA/issues
-Date: 2026-09-25
+Date: 2026-10-10
 Encoding: UTF-8
 LazyData: true
 Config/testthat/edition: 3

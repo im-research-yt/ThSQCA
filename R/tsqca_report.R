@@ -282,12 +282,12 @@ write_full_report <- function(result, con, dat = NULL, desc_vars = NULL,
       pc_str <- paste(params$pre_calibrated, collapse = ", ")
       writeLines(paste0("| Pre-Calibrated Conditions | ", pc_str, " (passed through, no binarization) |"), con)
     }
-    if (!is.null(params$thrX)) {
-      thrX_str <- paste(names(params$thrX), params$thrX, sep = "=", collapse = ", ")
+    if (!is.null(params[["thrX"]])) {
+      thrX_str <- paste(names(params[["thrX"]]), params[["thrX"]], sep = "=", collapse = ", ")
       writeLines(paste0("| X Thresholds | ", thrX_str, " |"), con)
     }
-    if (!is.null(params$sweep_range)) {
-      rng <- paste0(min(params$sweep_range), "-", max(params$sweep_range))
+    if (!is.null(params[["sweep_range"]])) {
+      rng <- paste0(min(params[["sweep_range"]]), "-", max(params[["sweep_range"]]))
       if (!is.null(params$sweep_var)) {
         # ctSweepS(): what is swept is the threshold of one condition, not Y
         writeLines(paste0("| Swept Condition | ", params$sweep_var, " |"), con)
@@ -301,8 +301,8 @@ write_full_report <- function(result, con, dat = NULL, desc_vars = NULL,
         if (length(v) > 1L) paste0(min(v), "-", max(v)) else as.character(v)
       }, character(1)), sep = "=", collapse = ", ")
     }
-    if (!is.null(params$sweep_list)) {
-      writeLines(paste0("| X Sweep List | ", fmt_sweep_list(params$sweep_list), " |"), con)
+    if (!is.null(params[["sweep_list"]])) {
+      writeLines(paste0("| X Sweep List | ", fmt_sweep_list(params[["sweep_list"]]), " |"), con)
     }
     if (!is.null(params$sweep_list_X)) {
       writeLines(paste0("| X Sweep List | ", fmt_sweep_list(params$sweep_list_X), " |"), con)
