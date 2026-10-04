@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ThSQCA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.9</span>
       </span>
     </div>
 
@@ -508,6 +508,13 @@ thresholds</strong>.</p>
 <span>  dir.exp        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  return_details <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: 16 setting(s) are reported as "No solution" because QCA raised an</span></span>
+<span><span class="co">#&gt; error, not because no solution exists. First error(s): combination 1, thrY=6</span></span>
+<span><span class="co">#&gt; (minimize): Directional expectations cannot be specified without including the</span></span>
+<span><span class="co">#&gt; remainders. | combination 1, thrY=7 (minimize): Directional expectations cannot</span></span>
+<span><span class="co">#&gt; be specified without including the remainders. | combination 2, thrY=6</span></span>
+<span><span class="co">#&gt; (minimize): Directional expectations cannot be specified without including the</span></span>
+<span><span class="co">#&gt; remainders.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">res_dts</span><span class="op">)</span></span>
 <span><span class="co">#&gt; DTS Summary</span></span>
@@ -937,7 +944,7 @@ is worth keeping in mind.</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] QCA_3.25     admisc_0.41  ThSQCA_2.0.8</span></span>
+<span><span class="co">#&gt; [1] QCA_3.25     admisc_0.41  ThSQCA_2.0.9</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] cli_3.6.6         knitr_1.52        rlang_1.3.0       xfun_0.61        </span></span>
