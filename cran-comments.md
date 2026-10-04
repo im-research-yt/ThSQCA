@@ -1,52 +1,26 @@
-# Submission of ThSQCA 2.0.8
+## Submission notes
 
-This is a corrective release submitted only two days after 2.0.7 (published
-2026-09-24). I apologize for the very short interval between submissions.
+This is ThSQCA 2.0.9, a bug-fix release submitted 8 days after 2.0.8 (accepted on 2026-09-26). I am sorry for the short interval and for the number of recent updates.
 
-A user of the package reported that `compute_fiss_core()` can return an
-incorrect core/peripheral classification without any error or warning. Since
-this function is used to prepare configuration tables for publication, and
-the incorrect behavior fails silently, I would prefer not to leave it on CRAN
-until the next regular release, hence this immediate follow-up.
+While auditing the report and chart functions after 2.0.8, I found several defects that can silently produce wrong or empty output. The methodology paper behind the package has just been published, so more people are likely to use the package now, and I would rather not leave these defects in the CRAN version. The solutions and fit measures returned by the sweep functions (`otSweep()`, `ctSweepS()`, `ctSweepM()`, `dtSweep()`) are unchanged; the defects are in the reports, charts and helper functions:
 
-## Changes
+* The "Necessity Analysis" table of `generate_report()` was computed for `Y` even when the outcome was negated (`~Y`), while the solution was computed for `~Y`.
+* `generate_report()` produced no per-combination sections for results of `ctSweepM()` and `dtSweep()`.
+* Configuration charts, `compute_fiss_core()` and `format_qca_term()` mishandled variable names that are the beginning of other names, or that contain non-ASCII characters or regular-expression characters.
+* The sweep functions reported "No solution" without any message when `QCA::minimize()` raised an error (for example for condition names with non-ASCII characters). They now warn about such names, and about settings that failed because of a QCA error. Errors that only mean that there is nothing to minimize are not reported.
 
-* `compute_fiss_core()` classifies the conditions of an intermediate QCA
-  solution as core or peripheral (Fiss, 2011). It now does so configuration by
-  configuration, as in Fiss's solution tables: the core conditions of a term
-  are those of the parsimonious term(s) contained in it. 2.0.7 counted a
-  condition as core whenever it appeared anywhere in the parsimonious
-  solution, which does not match how Fiss's tables are built. The new rule
-  is consistent with both of Fiss's solution tables; a regression test
-  encodes them.
-* When the parsimonious solution has tied minimal solutions, the function now
-  uses the derivation that `QCA::minimize()` records (`sol$i.sol`, `$p.sol`).
-  It classifies only the reported solution and compares it with its own
-  source parsimonious solution(s). 2.0.7 mixed terms of different
-  intermediate models and compared with every tied solution.
-* Condition names containing a dot were matched with the dot as a regular
-  expression wildcard; they are now matched literally.
-* Results of `ctSweepM()` and `dtSweep()`, for which the function silently
-  returned nothing, now give an informative error. Chart labels for
-  `ctSweepS()` results show the swept condition instead of `thrY`.
-* The help page, the vignettes and the README describe the rule and its
-  relation to Fiss (2011).
+Details are in NEWS.md. No new dependencies were added, and no exported function or argument was removed or renamed.
 
 ## Test environments
 
-* local: Windows 11 x64, R 4.6.1, QCA 3.25.5
-* Ubuntu 24.04, R 4.3.3, QCA 3.25
+* Local: Windows 11 x64, R 4.6.1 (`R CMD check --as-cran` on the built tarball)
+* win-builder: R-devel (2026-09-30 r90605)
 
 ## R CMD check results
 
-`devtools::check(remote = TRUE)` (that is, `R CMD check --as-cran` with the
-CRAN incoming checks enabled) on the built tarball:
-
 0 errors | 0 warnings | 1 note
 
-* "Days since last update: 2, Number of updates in past 6 months: 7" (checking
-  CRAN incoming feasibility). This is the short interval explained above.
+* checking CRAN incoming feasibility ... NOTE
+  Number of updates in past 6 months: 8
 
-## Reverse dependencies
-
-There are no reverse dependencies on CRAN.
+  This is informational. The recent releases (2.0.x) were corrective releases that fixed defects found after the earlier versions were published. I do not plan further frequent updates and will batch future changes into less frequent releases.
