@@ -1,6 +1,6 @@
 # ThSQCA
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17899390.svg)](https://doi.org/10.5281/zenodo.17899390)
+[![DOI](https://zenodo.org/badge/1106979131.svg)](https://doi.org/10.5281/zenodo.18170812)
 
 ThSQCA is an R package implementing **Threshold-Sweep QCA (ThS-QCA)**,  
 a framework for systematically varying the thresholds used to binarize  
@@ -272,11 +272,6 @@ install.packages("ThSQCA")
 install.packages("devtools")
 devtools::install_github("im-research-yt/ThSQCA")
 ```
-
-> **Note:** The current CRAN release is version 2.0.8. The GitHub version
-> additionally contains bug fixes for reports, configuration charts and helper
-> functions that are planned for the next CRAN release (2.0.9); see `NEWS.md`.
-> The solutions and fit measures returned by the sweep functions are unchanged.
 
 ## Relationship with QCA Package
 
